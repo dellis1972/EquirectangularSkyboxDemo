@@ -57,9 +57,9 @@ float4 MainPS(VSOutput input) : SV_Target0
 
     // Convert 3D direction to equirectangular UV:
     //   u = atan2(dir.z, dir.x) / (2*PI) + 0.5   (longitude, wraps around)
-    //   v = -dir.y * 0.5 + 0.5                    (latitude, -1..+1 -> 1..0)
+    //   v = acos(dir.y) / PI                      (latitude, maps angle linearly)
     float u = atan2(dir.z, dir.x) / (2.0 * 3.14159265358979) + 0.5;
-    float v = -dir.y * 0.5 + 0.5;
+    float v = acos(dir.y) / 3.14159265358979;
 
     return SAMPLE_TEXTURE(SkyMap, float2(u, v));
 }

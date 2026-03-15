@@ -56,12 +56,13 @@ public class Game1 : Game
         var skyEffect = Content.Load<Effect>("Effects/EquirectangularSkybox");
 
         // --- Procedural equirectangular sky texture ---------------------
-        _skyTexture = Content.Load<Texture2D>("Textures/HDR_blue_nebulae-1"); //GenerateSpaceTexture(2048, 1024);
+        //_skyTexture = Content.Load<Texture2D>("Textures/HDR_blue_nebulae-1"); //earthlike_planet_close //GenerateSpaceTexture(2048, 1024);
+        _skyTexture = Content.Load<Texture2D>("Textures/earthlike_planet_close");
 
         // --- Skybox renderer --------------------------------------------
         _skybox = new EquirectangularSkyboxRenderer(GraphicsDevice, skyEffect);
         _skybox.SkyTexture = _skyTexture;
-        _skybox.ShowWireframe = true;
+        _skybox.ShowWireframe = false;
 
         // --- Reference cube (BasicEffect + hand-built buffers) ----------
         BuildReferenceCube();
