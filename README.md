@@ -131,3 +131,8 @@ is a Windows binary that runs through Wine on Linux.
 - uses: MonoGame/monogame-actions/install-wine@v1
 - uses: MonoGame/monogame-actions/install-fonts@v1
 ```
+
+## Textures
+
+Good Sphere map sites
+- https://www.spacespheremaps.com/planetary-spheremaps/
