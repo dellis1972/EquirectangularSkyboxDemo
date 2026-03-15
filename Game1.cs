@@ -233,7 +233,7 @@ public class Game1 : Game
         _cubeVB.SetData(verts);
 
         _cubeIB = new IndexBuffer(GraphicsDevice,
-            IndexElementSize.SixteenBit, idx.Length, BufferUsage.WriteOnly);
+            IndexElementSize.SixteenBits, idx.Length, BufferUsage.WriteOnly);
         _cubeIB.SetData(idx);
 
         _basicEffect = new BasicEffect(GraphicsDevice)

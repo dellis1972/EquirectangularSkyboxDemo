@@ -112,7 +112,7 @@ public class SphereMesh : IDisposable
                                         vertexCount, BufferUsage.WriteOnly);
         VertexBuffer.SetData(vertices);
 
-        IndexBuffer = new IndexBuffer(device, IndexElementSize.SixteenBit,
+        IndexBuffer = new IndexBuffer(device, IndexElementSize.SixteenBits,
                                       indexCount, BufferUsage.WriteOnly);
         IndexBuffer.SetData(indices);
 
