@@ -1,0 +1,43 @@
+name: Build
+
+on:
+  push:
+    branches: [ "main", "master", "copilot/**" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      # Install Wine — required by the MonoGame MGFXC shader compiler on Linux
+      - name: Install Wine
+        uses: MonoGame/monogame-actions/install-wine@v1
+
+      # Install Microsoft fonts — required by the MonoGame content pipeline
+      - name: Install Fonts
+        uses: MonoGame/monogame-actions/install-fonts@v1
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: EquirectangularSkyboxDemo-linux
+          path: bin/Release/net8.0/
+          if-no-files-found: warn
