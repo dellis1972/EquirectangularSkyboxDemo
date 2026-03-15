@@ -12,6 +12,7 @@ public class Game1 : Game
     private QuaternionCamera?              _camera;
     private EquirectangularSkyboxRenderer? _skybox;
     private Texture2D?                     _skyTexture;
+    private SpriteBatch?                   _spriteBatch;
 
     // Simple reference cube drawn with BasicEffect
     private BasicEffect?    _basicEffect;
@@ -50,15 +51,17 @@ public class Game1 : Game
 
     protected override void LoadContent()
     {
+        _spriteBatch = new SpriteBatch(GraphicsDevice);
         // --- Skybox effect (compiled by MGCB) ---------------------------
         var skyEffect = Content.Load<Effect>("Effects/EquirectangularSkybox");
 
         // --- Procedural equirectangular sky texture ---------------------
-        _skyTexture = GenerateSpaceTexture(2048, 1024);
+        _skyTexture = Content.Load<Texture2D>("Textures/HDR_blue_nebulae-1"); //GenerateSpaceTexture(2048, 1024);
 
         // --- Skybox renderer --------------------------------------------
         _skybox = new EquirectangularSkyboxRenderer(GraphicsDevice, skyEffect);
         _skybox.SkyTexture = _skyTexture;
+        _skybox.ShowWireframe = true;
 
         // --- Reference cube (BasicEffect + hand-built buffers) ----------
         BuildReferenceCube();
@@ -94,7 +97,7 @@ public class Game1 : Game
 
         // 2. Draw a small reference cube at the origin so you can verify
         //    camera movement and depth work correctly.
-        DrawReferenceCube();
+       //DrawReferenceCube();
 
         base.Draw(gameTime);
     }
@@ -133,7 +136,7 @@ public class Game1 : Game
         }
 
         // --- Stars ----------------------------------------------------------
-        int starCount = 800;
+        int starCount = 8000;
         for (int s = 0; s < starCount; s++)
         {
             int   sx   = rng.Next(width);

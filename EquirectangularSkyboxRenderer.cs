@@ -22,6 +22,14 @@ public class EquirectangularSkyboxRenderer : IDisposable
         Filter   = TextureFilter.Linear,
     };
 
+    private static readonly RasterizerState WireframeRasterizer = new RasterizerState
+    {
+        FillMode = FillMode.WireFrame,
+        CullMode = CullMode.None,
+    };
+
+    private BasicEffect? _wireEffect;
+
     /// <summary>
     /// The equirectangular panorama texture to display as the sky.
     /// </summary>
@@ -32,6 +40,12 @@ public class EquirectangularSkyboxRenderer : IDisposable
     /// to spin the sky without moving the camera.
     /// </summary>
     public float YawOffset { get; set; } = 0f;
+
+    /// <summary>When true, draws a wireframe overlay of the sphere mesh.</summary>
+    public bool ShowWireframe { get; set; } = false;
+
+    /// <summary>Wireframe line colour.</summary>
+    public Color WireframeColor { get; set; } = new Color(0f, 0f, 1f, 0.2f);
 
     public EquirectangularSkyboxRenderer(GraphicsDevice graphicsDevice, Effect effect,
                                           int slices = 32, int stacks = 16)
@@ -54,7 +68,7 @@ public class EquirectangularSkyboxRenderer : IDisposable
 
         // --- Set render states ------------------------------------------
         _gd.DepthStencilState = DepthStencilState.None;
-        _gd.RasterizerState   = RasterizerState.CullClockwise; // inside sphere
+        _gd.RasterizerState   = RasterizerState.CullCounterClockwise; // inside sphere
         _gd.SamplerStates[0]  = SkyboxSampler;
 
         // Strip translation from view matrix so camera is always at origin.
@@ -86,6 +100,34 @@ public class EquirectangularSkyboxRenderer : IDisposable
                 primitiveCount: _sphere.PrimitiveCount);
         }
 
+        // --- Optional wireframe overlay ---------------------------------
+        if (ShowWireframe)
+        {
+            _wireEffect ??= new BasicEffect(_gd)
+            {
+                VertexColorEnabled = false,
+                TextureEnabled     = false,
+                LightingEnabled    = false,
+            };
+
+            _wireEffect.DiffuseColor = WireframeColor.ToVector3();
+            _wireEffect.World        = Matrix.Identity;
+            _wireEffect.View         = rotationOnly;
+            _wireEffect.Projection   = projection;
+
+            _gd.RasterizerState = WireframeRasterizer;
+
+            foreach (EffectPass pass in _wireEffect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+                _gd.DrawIndexedPrimitives(
+                    PrimitiveType.TriangleList,
+                    baseVertex: 0,
+                    startIndex: 0,
+                    primitiveCount: _sphere.PrimitiveCount);
+            }
+        }
+
         // --- Clear depth buffer so scene geometry renders on top --------
         _gd.Clear(ClearOptions.DepthBuffer, Color.Black, 1f, 0);
 
@@ -98,6 +140,7 @@ public class EquirectangularSkyboxRenderer : IDisposable
     public void Dispose()
     {
         _sphere?.Dispose();
+        _wireEffect?.Dispose();
         // Note: SkyboxSampler is shared/static — it is intentionally not disposed here.
     }
 }

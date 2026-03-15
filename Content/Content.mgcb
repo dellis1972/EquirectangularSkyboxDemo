@@ -19,3 +19,7 @@
 /processorParam:DebugMode=Auto
 /build:Effects/EquirectangularSkybox.fx
 
+/importer:TextureImporter
+/processor:TextureProcessor
+/build:Textures/HDR_blue_nebulae-1.hdr
+
